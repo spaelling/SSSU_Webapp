@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      height: 100vh;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+    .container {
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      max-width: 600px;
+      margin: 1rem;
+    }
+    h1 {
+      color: #2c3e50;
+      margin-bottom: 1rem;
+    }
+    p {
+      color: #34495e;
+      line-height: 1.6;
+    }
+    .loader {
+      width: 48px;
+      height: 48px;
+      border: 5px solid #f3f3f3;
+      border-radius: 50%;
+      border-top: 5px solid #3498db;
+      animation: spin 1s linear infinite;
+      margin: 2rem auto;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+  <title>Auto Sign-In with Session Logic</title>
+  <script src="https://alcdn.msauth.net/browser/2.19.0/js/msal-browser.min.js"></script>
+  <script>
+    const sessionCookieName = "sessionActive";
+
+    function isSessionCookieSet() {
+      return document.cookie.split("; ")
+        .some(cookie => cookie.startsWith(sessionCookieName + "="));
+    }
+
+    function setSessionCookie() {
+      document.cookie = sessionCookieName + "=1; path=/; secure";
+    }
+
+    // MSAL config WITHOUT the /authorize path
+    const msalConfig = {
+      auth: {
+        clientId: "7e2633fd-3c09-4462-bd4c-04bb51f5ca9a",
+        authority: "https://login.microsoftonline.com/d8614e07-30b5-4f3c-9d6a-f18e7f1ebe5d",
+        knownAuthorities: ["login.microsoftonline.com"],
+        redirectUri: "https://thankful-moss-09a29c903.6.azurestaticapps.net"
+      },
+      cache: {
+        cacheLocation: "localStorage",
+        storeAuthStateInCookie: false
+      }
+    };
+
+    const msalInstance = new msal.PublicClientApplication(msalConfig);
+
+    msalInstance.handleRedirectPromise()
+      .then(response => {
+        if (response) {
+          console.log("Login successful:", response);
+          setSessionCookie();
+          // Add a 2 second delay before redirect
+          setTimeout(() => {
+            window.location.href = "https://chanceofsecurity.com";
+          }, 2000);
+        } else {
+          if (!isSessionCookieSet()) {
+            localStorage.clear();
+          }
+          // Pass user flow name in extraQueryParameters
+          msalInstance.loginRedirect({
+            scopes: ["openid", "profile"],
+            extraQueryParameters: { p: "name_used_to_call_userFlow" }
+          });
+        }
+      })
+      .catch(error => {
+        console.error("Login error:", error);
+      });
+  </script>
+</head>
+<body>
+    <div class="container">
+      <h1>Welcome to Cloudy With a Chance Of Security! 🚀</h1>
+      <p>You've successfully completed the Microsoft Entra ID self-service sign-up process.</p>
+      <p>Your account has been created and verified through our secure authentication system.</p>
+      <p>In a moment, you'll be redirected to my main blog platform where you can explore security insights and knowledge.</p>
+      <div class="loader"></div>
+      <p><small>If you're not redirected automatically, please wait a few seconds...</small></p>
+    </div>
+</body>
+  </html>
