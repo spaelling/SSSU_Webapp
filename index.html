@@ -38,6 +38,9 @@
       animation: spin 1s linear infinite;
       margin: 2rem auto;
     }
+    .hidden {
+      display: none !important;
+    }
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
@@ -74,38 +77,40 @@
     const msalInstance = new msal.PublicClientApplication(msalConfig);
 
     msalInstance.handleRedirectPromise()
-      .then(response => {
-        if (response) {
-          console.log("Login successful:", response);
-          setSessionCookie();
-          // Add a 2 second delay before redirect
-          setTimeout(() => {
-            window.location.href = "https://chanceofsecurity.com";
-          }, 5000);
-        } else {
-          if (!isSessionCookieSet()) {
-            localStorage.clear();
-          }
-          // Pass user flow name in extraQueryParameters
-          msalInstance.loginRedirect({
-            scopes: ["openid", "profile"],
-            extraQueryParameters: { p: "name_used_to_call_userFlow" }
-          });
-        }
-      })
-      .catch(error => {
-        console.error("Login error:", error);
-      });
+        .then(response => {
+            if (response) {
+                console.log("Login successful:", response);
+                setSessionCookie();
+                // Show the welcome container
+                document.getElementById('welcomeContainer').classList.remove('hidden');
+                // Add delay before redirect
+                setTimeout(() => {
+                    window.location.href = "https://chanceofsecurity.com";
+                }, 5000);
+            } else {
+                if (!isSessionCookieSet()) {
+                    localStorage.clear();
+                }
+                // Pass user flow name in extraQueryParameters
+                msalInstance.loginRedirect({
+                    scopes: ["openid", "profile"],
+                    extraQueryParameters: { p: "name_used_to_call_userFlow" }
+                });
+            }
+        })
+        .catch(error => {
+            console.error("Login error:", error);
+        });
   </script>
 </head>
 <body>
-    <div class="container">
-      <h1>Welcome to Cloudy With a Chance Of Security! 🚀</h1>
-      <p>You've successfully completed the Microsoft Entra ID self-service sign-up process.</p>
-      <p>Your account has been created and verified through our secure authentication system.</p>
-      <p>In a moment, you'll be redirected to my main blog platform where you can explore security insights and knowledge.</p>
-      <div class="loader"></div>
-      <p><small>If you're not redirected automatically, please wait a few seconds...</small></p>
+    <div class="container hidden" id="welcomeContainer">
+        <h1>Welcome to Cloudy With a Chance Of Security! 🚀</h1>
+        <p>You've successfully completed the Microsoft Entra ID self-service sign-up process.</p>
+        <p>Your account has been created and verified through our secure authentication system.</p>
+        <p>In a moment, you'll be redirected to my main blog platform where you can explore security insights and knowledge.</p>
+        <div class="loader"></div>
+        <p><small>If you're not redirected automatically, please wait a few seconds...</small></p>
     </div>
 </body>
-  </html>
+</html>
