@@ -63,10 +63,10 @@
     // MSAL config WITHOUT the /authorize path
     const msalConfig = {
       auth: {
-        clientId: "7e2633fd-3c09-4462-bd4c-04bb51f5ca9a",
-        authority: "https://login.microsoftonline.com/d8614e07-30b5-4f3c-9d6a-f18e7f1ebe5d",
+        clientId: "5ea2df38-0197-4781-bfbc-600693237ef9",
+        authority: "https://login.microsoftonline.com/690e25b4-8c5e-4a10-a32e-523da88a4c99",
         knownAuthorities: ["login.microsoftonline.com"],
-        redirectUri: "https://thankful-moss-09a29c903.6.azurestaticapps.net"
+        redirectUri: "https://jwt.ms"
       },
       cache: {
         cacheLocation: "localStorage",
@@ -94,7 +94,7 @@
                 // Pass user flow name in extraQueryParameters
                 msalInstance.loginRedirect({
                     scopes: ["openid", "profile"],
-                    extraQueryParameters: { p: "name_used_to_call_userFlow" }
+                    extraQueryParameters: { p: "Egmont-01" }
                 });
             }
         })
@@ -105,10 +105,9 @@
 </head>
 <body>
     <div class="container hidden" id="welcomeContainer">
-        <h1>Welcome to Cloudy With a Chance Of Security! 🚀</h1>
+        <h1>Egmont SSU</h1>
         <p>You've successfully completed the Microsoft Entra ID self-service sign-up process.</p>
         <p>Your account has been created and verified through our secure authentication system.</p>
-        <p>In a moment, you'll be redirected to my main blog platform where you can explore security insights and knowledge.</p>
         <div class="loader"></div>
         <p><small>If you're not redirected automatically, please wait a few seconds...</small></p>
     </div>
