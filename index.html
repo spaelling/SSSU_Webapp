@@ -66,7 +66,7 @@
         clientId: "5ea2df38-0197-4781-bfbc-600693237ef9",
         authority: "https://login.microsoftonline.com/690e25b4-8c5e-4a10-a32e-523da88a4c99",
         knownAuthorities: ["login.microsoftonline.com"],
-        redirectUri: "https://jwt.ms"
+        redirectUri: "https://lively-moss-09d5acf03.2.azurestaticapps.net"
       },
       cache: {
         cacheLocation: "localStorage",
@@ -85,7 +85,7 @@
                 document.getElementById('welcomeContainer').classList.remove('hidden');
                 // Add delay before redirect
                 setTimeout(() => {
-                    window.location.href = "https://chanceofsecurity.com";
+                    window.location.href = "https://lively-moss-09d5acf03.2.azurestaticapps.net";
                 }, 5000);
             } else {
                 if (!isSessionCookieSet()) {
@@ -93,7 +93,7 @@
                 }
                 // Pass user flow name in extraQueryParameters
                 msalInstance.loginRedirect({
-                    scopes: ["openid", "profile"],
+                    scopes: ["openid", "profile", "email"],
                     extraQueryParameters: { p: "Egmont-01" }
                 });
             }
