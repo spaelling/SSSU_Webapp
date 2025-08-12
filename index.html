@@ -105,11 +105,39 @@
 </head>
 <body>
     <div class="container hidden" id="welcomeContainer">
-        <h1>Egmont SSU</h1>
-        <p>You've successfully completed the Microsoft Entra ID self-service sign-up process.</p>
-        <p>Your account has been created and verified through our secure authentication system.</p>
-        <div class="loader"></div>
-        <p><small>If you're not redirected automatically, please wait a few seconds...</small></p>
+      <h1>Egmont SSU</h1>
+      <p id="usernameDisplay"></p>
+      <p>You've successfully completed the Microsoft Entra ID self-service sign-up process.</p>
+      <p>Your account has been created and verified through our secure authentication system.</p>
+      <div class="loader"></div>
+      <p><small>If you're not redirected automatically, please wait a few seconds...</small></p>
     </div>
+    <script>
+      function decodeJwt(token) {
+      try {
+        const payload = token.split('.')[1];
+        const decoded = atob(payload.replace(/-/g, '+').replace(/_/g, '/'));
+        return JSON.parse(decoded);
+      } catch (e) {
+        return null;
+      }
+      }
+
+      function showUsername(idToken) {
+      const decoded = decodeJwt(idToken);
+      if (decoded && decoded.name) {
+        document.getElementById('usernameDisplay').textContent = `Welcome, ${decoded.name}!`;
+      } else if (decoded && decoded.preferred_username) {
+        document.getElementById('usernameDisplay').textContent = `Welcome, ${decoded.preferred_username}!`;
+      }
+      }
+
+      msalInstance.handleRedirectPromise()
+      .then(response => {
+        if (response && response.idToken) {
+        showUsername(response.idToken);
+        }
+      });
+    </script>
 </body>
 </html>
